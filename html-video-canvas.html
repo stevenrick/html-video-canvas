@@ -1,0 +1,47 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <video id="video" autoplay="true"></video>
+        <canvas id="canvas"></canvas>
+    </body>
+    <footer>
+        
+    </footer>
+</html>
+
+<script>
+
+var video = document.getElementById('video');
+
+if (navigator.mediaDevices.getUserMedia) {
+  var successCallback = function(stream) {
+    video.srcObject = stream;
+  };
+  var errorCallback = function(error) {
+    console.log(error);
+  };
+  navigator.mediaDevices.getUserMedia({
+    audio: true,
+    video: true
+  }).then(successCallback, errorCallback);
+}
+
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+
+function renderFrame() {
+  // re-register callback
+  requestAnimationFrame(renderFrame);
+  // set internal canvas size to match HTML element size
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  }
+}
+
+requestAnimationFrame(renderFrame);
+
+</script>
